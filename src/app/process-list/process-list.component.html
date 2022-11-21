@@ -1,0 +1,36 @@
+<div style="width: 51rem">
+  <div class="d-flex justify-content-around align-items-center bg-dark">
+    <h2 class="text-white w-100">PROCESSES</h2>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-center align-items-center">
+    <div *ngFor="let process of processList" class="card shadow-lg m-3" style="width: 15rem;">
+
+      <div class="card-header">
+        <div>{{process.title}}</div>
+      </div>
+
+      <div class="card-body">
+        <div *ngFor="let stage of process.stage" class="card shadow-sm m-3">
+          <div class="card-header">
+            <div>{{stage.prompt}}</div>
+          </div>
+          <div class="card-body">
+            <div>{{stage.type}}</div>
+            <div *ngFor="let choice of stage.choice">
+              <div>{{choice.text}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer d-flex justify-content-around">
+        <button (click)="onViewProcess(process.id)" class="btn btn-outline-primary m-2">Start</button>
+      </div>
+
+    </div>
+
+    <div *ngIf="processList.length === 0" class="text-danger bg-dark mt-5">No Processes found in database</div>
+  </div>
+</div>
+
