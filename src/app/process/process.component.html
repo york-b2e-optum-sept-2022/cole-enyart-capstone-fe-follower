@@ -1,1 +1,59 @@
-<p>process works!</p>
+<div class="card shadow-lg">
+  <div class="card-header d-flex justify-content-around align-items-center">
+    <h3>{{process.title}}</h3>
+    <div>Stages: {{index}} / {{process.stages.length}}</div>
+  </div>
+
+  <div class="card-body">
+    <div>{{process.stages[index].prompt}}</div>
+
+      <div *ngIf="process.stages[index].type === 'boolean'">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="opt-radio" id="true" value="true" checked #bool>
+          <label class="form-check-label" for="true">True</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="opt-radio" id="false" value="false">
+          <label class="form-check-label" for="false">False</label>
+        </div>
+
+        <div class="card-footer d-flex justify-content-around">
+          <button (click)="onCancel()" class="btn btn-outline-secondary m-2">Cancel</button>
+          <button type="button" *ngIf="last" (click)="onSave(bool.checked.toString())" class="btn btn-outline-success m-2">Save Process
+          </button>
+          <button type="button" *ngIf="!last" (click)="onNext(bool.checked.toString())" class="btn btn-outline-primary m-2">Next Stage</button>
+        </div>
+      </div>
+
+      <div *ngIf="process.stages[index].type === 'choice'">
+        <div *ngFor="let choice of process.stages[index].choices">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="flexCheckDefault" [ngModel]="false" (ngModelChange)="handleChange($event, choice.text)">
+            <label class="form-check-label" for="flexCheckDefault">{{choice.text}}</label>
+          </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-around">
+          <button (click)="onCancel()" class="btn btn-outline-secondary m-2">Cancel</button>
+          <button type="button" *ngIf="last" (click)="onSave('')" class="btn btn-outline-success m-2">Save Process
+          </button>
+          <button type="button" *ngIf="!last" (click)="onNext('')" class="btn btn-outline-primary m-2">Next Stage</button>
+        </div>
+      </div>
+
+      <div *ngIf="process.stages[index].type === 'text'">
+        <div class="form-check">
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" #text></textarea>
+        </div>
+
+        <div *ngIf="errorMessage" class="text-danger">{{errorMessage}}</div>
+
+        <div class="card-footer d-flex justify-content-around">
+          <button (click)="onCancel()" class="btn btn-outline-secondary m-2">Cancel</button>
+          <button type="button" *ngIf="last" (click)="onSave(text.value)" class="btn btn-outline-success m-2">Save Process
+          </button>
+          <button type="button" *ngIf="!last" (click)="onNext(text.value)" class="btn btn-outline-primary m-2">Next Stage</button>
+        </div>
+      </div>
+  </div>
+</div>

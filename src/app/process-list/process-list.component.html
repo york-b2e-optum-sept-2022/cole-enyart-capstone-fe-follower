@@ -11,13 +11,13 @@
       </div>
 
       <div class="card-body">
-        <div *ngFor="let stage of process.stage" class="card shadow-sm m-3">
+        <div *ngFor="let stage of process.stages" class="card shadow-sm m-3">
           <div class="card-header">
             <div>{{stage.prompt}}</div>
           </div>
           <div class="card-body">
             <div>{{stage.type}}</div>
-            <div *ngFor="let choice of stage.choice">
+            <div *ngFor="let choice of stage.choices">
               <div>{{choice.text}}</div>
             </div>
           </div>
