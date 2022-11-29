@@ -77,29 +77,25 @@ export class ProcessService {
     })
   }
 
-  onNext(objValue: string) {
-    let leng = this.$process.getValue().stages.length;
-
+  onNext(answer: string) {
     this.$processError.next("");
-    if (objValue === "") {
+    if (this.$index.getValue() === this.$process.getValue().stages.length - 1) {
+      this.$last.next(true);
+    }
+
+    if (answer === "") {
       this.$processError.next(this.NO_INPUT_ERROR);
       return;
     }
-    leng = leng - 1;
-    console.log(leng);
-    if (leng === 0) {
-      this.$last.next(true);
-    }
+
     console.log(this.$index.getValue(), this.$process.getValue().stages.length)
 
     if (this.$index.getValue() + 1 < this.$process.getValue().stages.length) {
       this.$last.next(false);
-      console.log(this.$index.getValue());
       this.$index.next(this.$index.getValue() + 1);
-      console.log(this.$index.getValue());
     }
 
-    this.addAnswer(objValue);
+    this.addAnswer(answer);
   }
 
   addAnswer(answer: string) {
