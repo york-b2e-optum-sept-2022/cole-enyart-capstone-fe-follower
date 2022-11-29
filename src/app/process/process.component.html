@@ -1,7 +1,7 @@
 <div class="card shadow-lg">
   <div class="card-header d-flex justify-content-around align-items-center">
     <h3>{{process.title}}</h3>
-    <div>Stages: {{index}} / {{process.stages.length}}</div>
+    <div>Stages: {{index + 1}} / {{process.stages.length}}</div>
   </div>
 
   <div class="card-body">
@@ -35,9 +35,9 @@
 
         <div class="card-footer d-flex justify-content-around">
           <button (click)="onCancel()" class="btn btn-outline-secondary m-2">Cancel</button>
-          <button type="button" *ngIf="last" (click)="onSave('')" class="btn btn-outline-success m-2">Save Process
+          <button type="button" *ngIf="last" (click)="onSave('Choice')" class="btn btn-outline-success m-2">Save Process
           </button>
-          <button type="button" *ngIf="!last" (click)="onNext('')" class="btn btn-outline-primary m-2">Next Stage</button>
+          <button type="button" *ngIf="!last" (click)="onNext('Choice')" class="btn btn-outline-primary m-2">Next Stage</button>
         </div>
       </div>
 

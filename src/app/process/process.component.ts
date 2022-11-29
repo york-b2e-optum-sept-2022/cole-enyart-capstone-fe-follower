@@ -52,6 +52,7 @@ export class ProcessComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.processService.$last.next(false);
     this.onNext("");
     this.processService.$index.next(0);
   }
@@ -64,6 +65,11 @@ export class ProcessComponent implements OnInit, OnDestroy {
   onCancel() {
     this.viewService.viewProcessList();
     this.processService.getAllProcesses();
+    this.processService.finishedProcess = {
+      title: "",
+      finishedStages: []
+    };
+    this.processService.choice = [];
   }
 
   onSave(value: string) {
@@ -76,7 +82,6 @@ export class ProcessComponent implements OnInit, OnDestroy {
   }
 
   handleChange(event: any, text: string) {
-    const test: string = event + text
-    console.log(test);
+    this.processService.addChoice(text, event);
   }
 }

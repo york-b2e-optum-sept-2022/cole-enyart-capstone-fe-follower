@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, first} from "rxjs";
 import {IProcess} from "./_interfaces/IProcess";
 import {HttpService} from "./http.service";
@@ -16,10 +16,11 @@ export class ProcessService {
     title: "",
     stages: [{id: 0, prompt: "", type: "", choices: []}]
   });
-  $finishedProcess = new BehaviorSubject<IFinishedProcess>({
+  finishedProcess: IFinishedProcess = {
     title: "",
     finishedStages: []
-  });
+  };
+  choice: { text: string, "value": string }[] = [];
   $index = new BehaviorSubject<number>(0);
   $last = new BehaviorSubject<boolean>(false);
   $processError = new BehaviorSubject<string>("");
@@ -33,7 +34,7 @@ export class ProcessService {
   public getAllProcesses() {
     this.httpService.getAllProcesses().pipe(first()).subscribe({
       next: (processList) => {
-        for(let process of processList) {
+        for (let process of processList) {
           process.stages?.sort((a, b) => (a.id > b.id ? 1 : -1))
         }
 
@@ -58,42 +59,66 @@ export class ProcessService {
       return;
     }
     this.addAnswer(value);
-    this.$finishedProcess.getValue().title = title;
+    this.$last.next(false);
+    this.finishedProcess.title = title;
 
-    this.httpService.saveProcess(this.$finishedProcess.getValue()).pipe(first()).subscribe({
+    this.httpService.saveProcess(this.finishedProcess).pipe(first()).subscribe({
       next: () => {
-        this.getAllProcesses();
         this.viewService.viewProcessList();
+        this.getAllProcesses();
+        this.finishedProcess = {
+          title: "",
+          finishedStages: []
+        };
+        this.choice = [];
       },
       error: () => {
       }
     })
   }
 
-  onNext(value: string) {
+  onNext(objValue: string) {
+    let leng = this.$process.getValue().stages.length;
+
     this.$processError.next("");
-    if (value === "") {
+    if (objValue === "") {
       this.$processError.next(this.NO_INPUT_ERROR);
       return;
     }
-    this.addAnswer(value);
-    if (this.$index.getValue() + 2 < this.$process.getValue().stages.length) {
-      this.$last.next(false);
-      this.$index.next(+ 1);
-    } else {
+    leng = leng - 1;
+    console.log(leng);
+    if (leng === 0) {
       this.$last.next(true);
-      this.$index.next(+ 1);
     }
+    console.log(this.$index.getValue(), this.$process.getValue().stages.length)
+
+    if (this.$index.getValue() + 1 < this.$process.getValue().stages.length) {
+      this.$last.next(false);
+      console.log(this.$index.getValue());
+      this.$index.next(this.$index.getValue() + 1);
+      console.log(this.$index.getValue());
+    }
+
+    this.addAnswer(objValue);
   }
 
-  addAnswer(value: string) {
-    if (value !== "") {
-      const question = this.$process.getValue().stages[this.$index.getValue()].prompt
-      const arr = {
-        prompt: question, answer: value
-      }
-
-      this.$finishedProcess.getValue().finishedStages.push(arr);
+  addAnswer(answer: string) {
+    const prompt = this.$process.getValue().stages[this.$index.getValue()].prompt;
+    // const finishedChoices = this.choice.filter((choice) => choice.value === "true");
+    // console.log(finishedChoices);
+    const stage = {
+      prompt: prompt,
+      answer: answer,
+      finishedChoices: this.choice
     }
+
+    this.finishedProcess.finishedStages.push(stage);
   }
+
+  addChoice(text: string, value: string) {
+    const choice = {text: text, value: value};
+    this.choice.push(choice);
+    console.log(this.choice);
+  }
+
 }
