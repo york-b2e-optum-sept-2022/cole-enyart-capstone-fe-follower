@@ -70,7 +70,6 @@ export class ProcessService {
           title: "",
           finishedStages: []
         };
-        this.choice = [];
       },
       error: () => {
       }
@@ -79,23 +78,28 @@ export class ProcessService {
 
   onNext(answer: string) {
     this.$processError.next("");
-    if (this.$index.getValue() === this.$process.getValue().stages.length - 1) {
+    this.$last.next(false);
+
+    if (this.$index.getValue() + 1 === this.$process.getValue().stages.length) {
       this.$last.next(true);
     }
+    console.log(this.$last.getValue());
 
     if (answer === "") {
       this.$processError.next(this.NO_INPUT_ERROR);
       return;
     }
 
-    console.log(this.$index.getValue(), this.$process.getValue().stages.length)
+    this.addAnswer(answer);
 
     if (this.$index.getValue() + 1 < this.$process.getValue().stages.length) {
-      this.$last.next(false);
       this.$index.next(this.$index.getValue() + 1);
     }
 
-    this.addAnswer(answer);
+    if (this.$index.getValue() + 1 === this.$process.getValue().stages.length) {
+      this.$last.next(true);
+    }
+    console.log(this.$index.getValue(), this.$process.getValue().stages.length)
   }
 
   addAnswer(answer: string) {
@@ -109,6 +113,7 @@ export class ProcessService {
     }
 
     this.finishedProcess.finishedStages.push(stage);
+    this.choice = [];
   }
 
   addChoice(text: string, value: string) {

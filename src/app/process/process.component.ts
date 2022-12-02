@@ -52,7 +52,6 @@ export class ProcessComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.processService.$last.next(false);
     this.onNext("");
     this.processService.$index.next(0);
   }
